@@ -1,27 +1,45 @@
-const router = require('express').Router()
+const router = require("express").Router();
 
-router.get('/', (req, res, next) => {
-  // DO YOUR MAGIC
-})
+const Accounts = require("./accounts-model");
 
-router.get('/:id', (req, res, next) => {
-  // DO YOUR MAGIC
-})
+router.get("/", async (req, res, next) => {
+  try {
+    const accounts = await Accounts.getAll();
+    res.status(200).json(accounts);
+  } catch (err) {
+    res.status(500).json({ message: "There was an error in retrieving the accounts." });
+  }
+});
 
-router.post('/', (req, res, next) => {
-  // DO YOUR MAGIC
-})
+router.get("/:id", async (req, res, next) => {
+  try {
+    const account = await Accounts.getById(req.params.id);
+    res.status(200).json(account);
+  } catch (err) {
+    res.status(500).json({ message: "There was an error in retrieving the account." });
+  }
+});
 
-router.put('/:id', (req, res, next) => {
+router.post("/", async (req, res, next) => {
+  try {
+    const newAccount = await Accounts.create(req.body);
+    res.status(201).json(newAccount);
+  } catch (err) {
+    res.status(500).json({ message: "There was an error in creating the account." });
+  }
+});
+
+router.put("/:id", (req, res, next) => {
   // DO YOUR MAGIC
 });
 
-router.delete('/:id', (req, res, next) => {
+router.delete("/:id", (req, res, next) => {
   // DO YOUR MAGIC
-})
+});
 
-router.use((err, req, res, next) => { // eslint-disable-line
+router.use((err, req, res, next) => {
+  // eslint-disable-line
   // DO YOUR MAGIC
-})
+});
 
 module.exports = router;
