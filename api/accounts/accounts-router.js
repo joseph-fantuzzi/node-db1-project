@@ -7,7 +7,7 @@ router.get("/", async (req, res, next) => {
     const accounts = await Accounts.getAll();
     res.status(200).json(accounts);
   } catch (err) {
-    res.status(500).json({ message: "There was an error in retrieving the accounts." });
+    next(err);
   }
 });
 
@@ -16,7 +16,7 @@ router.get("/:id", async (req, res, next) => {
     const account = await Accounts.getById(req.params.id);
     res.status(200).json(account);
   } catch (err) {
-    res.status(500).json({ message: "There was an error in retrieving the account." });
+    next(err);
   }
 });
 
@@ -25,7 +25,7 @@ router.post("/", async (req, res, next) => {
     const newAccount = await Accounts.create(req.body);
     res.status(201).json(newAccount);
   } catch (err) {
-    res.status(500).json({ message: "There was an error in creating the account." });
+    next(err);
   }
 });
 
@@ -34,17 +34,24 @@ router.put("/:id", async (req, res, next) => {
     const updatedAccount = await Accounts.updateById(req.params.id, req.body);
     res.status(200).json(updatedAccount);
   } catch (err) {
-    res.status(500).json({ message: "There was an error in updating the account." });
+    next(err);
   }
 });
 
-router.delete("/:id", (req, res, next) => {
-  // DO YOUR MAGIC
+router.delete("/:id", async (req, res, next) => {
+  try {
+    const deletedAccount = await Accounts.deleteById(req.params.id);
+    res.status(200).json(deletedAccount);
+  } catch (err) {
+    next(err);
+  }
 });
 
 router.use((err, req, res, next) => {
-  // eslint-disable-line
-  // DO YOUR MAGIC
+  res.status(err.status || 500).json({
+    message: err.message,
+    stack: err.stack,
+  });
 });
 
 module.exports = router;
